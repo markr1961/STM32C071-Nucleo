@@ -1,0 +1,9 @@
+commit notes
+
+07/16/2026 MAR
+first commit:
+CubeMX projects builds and runs.
+main 10mS loop running.
+IWDG works.
+blue LED toggles @ 100mS.
+green LED toggle with button.

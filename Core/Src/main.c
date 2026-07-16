@@ -31,7 +31,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define LOOP_TIME    10
+#define BLINK_RATE  100
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -47,6 +48,7 @@ __IO uint32_t BspButtonState = BUTTON_RELEASED;
 RTC_HandleTypeDef hrtc;
 
 /* USER CODE BEGIN PV */
+uint32_t ledSysTick;
 
 /* USER CODE END PV */
 
@@ -61,6 +63,13 @@ static void MX_RTC_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void Sleep(void)
+{
+  static uint32_t lastSysTick = 0;
+
+  while (HAL_GetTick() < lastSysTick + LOOP_TIME)
+    __WFI();
+}
 
 /* USER CODE END 0 */
 
@@ -133,6 +142,11 @@ int main(void)
   while (1)
   {
 
+    if (ledSysTick < HAL_GetTick())
+    {
+      BSP_LED_Toggle(LED_BLUE);
+      ledSysTick = HAL_GetTick() + BLINK_RATE;
+    }
     /* -- Sample board code for User push-button in interrupt mode ---- */
     if (BspButtonState == BUTTON_PRESSED)
     {
@@ -140,13 +154,16 @@ int main(void)
       BspButtonState = BUTTON_RELEASED;
       /* -- Sample board code to toggle leds ---- */
       BSP_LED_Toggle(LED_GREEN);
-      BSP_LED_Toggle(LED_BLUE);
+//      BSP_LED_Toggle(LED_BLUE);
 
       /* ..... Perform your action ..... */
     }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    LL_IWDG_ReloadCounter(IWDG);
+    Sleep();
+
   }
   /* USER CODE END 3 */
 }
