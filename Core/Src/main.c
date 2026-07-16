@@ -63,12 +63,13 @@ static void MX_RTC_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void Sleep(void)
+static void Sleep(void)
 {
   static uint32_t lastSysTick = 0;
 
   while (HAL_GetTick() < lastSysTick + LOOP_TIME)
     __WFI();
+  lastSysTick = HAL_GetTick();
 }
 
 /* USER CODE END 0 */
